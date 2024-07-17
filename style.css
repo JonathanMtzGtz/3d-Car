@@ -1,0 +1,44 @@
+main{
+    height: 400px;
+    width: 600px;
+}
+.botone {
+
+	text-align: center;
+	position: absolute;
+
+    margin-top: 50vh;
+    margin-right: 40vh;
+	z-index: 1;
+}
+
+.pauseButton {
+	right: 20px;
+	top: 10px;
+}
+.modelo3d {
+    width: 80%;
+    height: 500px;
+    margin: auto;
+   
+}
+canvas {
+    display: block; /* Elimina cualquier espacio en blanco alrededor del canvas */
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+.card{
+    background-color: grey;
+    position: absolute;
+    margin-top: 1%;
+    margin-left: 50%;
+	z-index: 1;
+    height: 150px;
+    border-radius: 10px;
+    padding: 10px;
+}
+.card,h1{
+    text-align: center;
+    
+}
