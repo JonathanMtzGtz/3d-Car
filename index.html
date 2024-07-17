@@ -23,49 +23,138 @@
 </head>
 <body>
   <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color (0xdddddd);
-    
-    
- 
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
-    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    const renderer = new THREE.WebGLRenderer({antialias:true});
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-       
-    const controls = new OrbitControls(camera, renderer.domElement)
+const scene = new THREE.Scene()
+scene.background = new THREE.Color (0xdddddd);
 
-controls.listenToKeyEvents(document.body)
+const light = new THREE.SpotLight(0xffffff, Math.PI * 200)
+light.position.set(5, 5, 5)
+scene.add(light)
 
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( { color: 324433 } );
-    const cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
+const ligt = new THREE.SpotLight(0xffffff, Math.PI * 200)
+ligt.position.set(-4, 5, 2)
+scene.add(ligt)
 
-    camera.position.z = 5;
 
-    function animate() {
-      requestAnimationFrame( animate );
 
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
 
-    animate2();
-    };
-function animate2(){
-  renderer.render(scene,camera);
-  requestAnimationFrame(animate);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+camera.position.z = 2.5
+camera.position.y = 1
+camera.position.x = 1
+
+const renderer = new THREE.WebGLRenderer({antialias:true})
+// Since Three r150, lighting has changed significantly with every version up to three r158
+// keep the threejs defaults, and reduce light watts in blender if using punctual lights
+// if using Threejs lights, then you need to experiment with light intensity.
+// renderer.physicallyCorrectLights = true //deprecated
+// renderer.useLegacyLights = false //deprecated
+renderer.shadowMap.enabled = true
+//renderer.setSize(window.innerWidth, window.innerHeight)
+//document.body.appendChild(renderer.domElement)
+// Añadir el canvas al div con la clase modelo3d
+const modelContainer = document.querySelector('.modelo3d');
+modelContainer.appendChild(renderer.domElement);
+// Ajustar el tamaño del renderer al tamaño del contenedor
+renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
+
+
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
+
+const loader = new GLTFLoader()
+loader.load(
+  '3d/car.glb',
+  function (gltf) {
+    const model = gltf.scene;
+    // gltf.scene.traverse(function (child) {
+    //     if ((child as THREE.Mesh).isMesh) {
+    //         const m = (child as THREE.Mesh)
+    //         m.receiveShadow = true
+    //         m.castShadow = true
+    //     }
+    //     if (((child as THREE.Light)).isLight) {
+    //         const l = (child as THREE.SpotLight)
+    //         l.castShadow = true
+    //         l.shadow.bias = -.003
+    //         l.shadow.mapSize.width = 2048
+    //         l.shadow.mapSize.height = 2048
+    //     }
+    // })
+    model.position.x = -1;
+    scene.add(gltf.scene)
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+  },
+  (error) => {
+    console.log(error)
+  }
+)
+
+
+function moveCamera() {
+  camera.position.set(-1, 1, -0.5); // Cambia esta posición según tus necesidades
+  camera.rotation.set(Math.PI / 2, 2, 2);
+  controls.update();
 }
-    animate();
+
+const moveCameraButton = document.getElementById('moveCameraButton');
+moveCameraButton.addEventListener('click', moveCamera);
+
+
+
+
+
+window.addEventListener('resize', onWindowResize, false)
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  render()
+}
+
+//const stats = new Stats()
+//document.body.appendChild(stats.dom)
+
+function animate() {
+  requestAnimationFrame(animate)
+
+  controls.update()
+
+  render()
+
+  stats.update()
+}
+
+function render() {
+  renderer.render(scene, camera)
+}
+
+animate()
   </script>
 
+ 
+    
+  
 
-<section>
+    <section class="modelo3d">
+        <!-- Aquí se añadirá el canvas -->
+         <div class="card">
+            <h1>Omoda Car</h1>
+            <button id="" class="">Encender luces</button>
+            <button id="" class="">Abrir puertas</button>
+          
+            <button id="moveCameraButton" class="moveCameraButton">ver interior</button>
 
-  <p>qegea</p>
-</section>
+
+         </div>
+       
+      </section>
+      
 </body>
 </html>
