@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"npx vite",
-    "dev": "vite",
+    "start":"vite",
+    
     "build": "vite build",
     "serve": "vite preview"
   },
